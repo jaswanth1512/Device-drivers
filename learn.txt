@@ -41,5 +41,17 @@ printk loglevel is compared with CONFIG_CONSOL_LOG_LEVEL and if it is less then 
 
 
 
+************************Device Drivers****************************
+Device driver is a code which knows how to handle a device and gaives an interface to user space to access that device.
+it also abstracts various hardware details from user-space application. kernal is used to connect the system calls to the device driver's system call.
 
+
+************************char driver*******************************
+character driver is used to access the data sequentially that is byte by byte
+RTC,keyboard...are examples.
+
+
+************************block driver*******************************
+The device which handles data in chunk or blocks are known as block device
+advance buffering techniques should be used in this
 
