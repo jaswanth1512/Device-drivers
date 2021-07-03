@@ -1,0 +1,15 @@
+
+****************************Building module*****************************
+
+Q1)why do we use __init for a initlization function?
+-> so that all the initilization is done in .init section of ELF and can be freed once the initlization is done
+
+Q2) How to compile a kernal module?
+-> make -C <linux kernal source tree>M=<makefile of our module>[target]
+Here -C --->is used to point the makefile of kernal tree, so that we could use all compiler swithces,dependency lsit,Version string.
+M=<makefile of our module> ---> this will help us to redirect to our makefile
+Target can be --> module(to build a module),module_install(to install a module),clean(to clean a module),help.
+Then we should create a make file for our program and it has a command "obj-<X> : <module_name>.o" 
+	X = n , Do not compile the module
+	X = y , compile and link module with kernal image
+	X = m , compile as dynamically loadable kernal module.	
