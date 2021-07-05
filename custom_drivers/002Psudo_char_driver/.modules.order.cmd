@@ -1,0 +1,1 @@
+cmd_/home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/002Psudo_char_driver/modules.order := {   echo /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/002Psudo_char_driver/main.ko; :; } | awk '!x[$$0]++' - > /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/002Psudo_char_driver/modules.order

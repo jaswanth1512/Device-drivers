@@ -1,0 +1,1 @@
+cmd_/home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/002Psudo_char_driver/Module.symvers := sed 's/ko$$/o/' /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/002Psudo_char_driver/modules.order | scripts/mod/modpost -m -a   -o /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/002Psudo_char_driver/Module.symvers -e -i Module.symvers   -T -
