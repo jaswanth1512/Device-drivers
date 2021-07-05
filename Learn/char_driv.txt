@@ -1,0 +1,97 @@
+********************Steps to establish connection btwn file access and driver******************
+	1) Create a device number(Major number)
+	2) Create a device files(Minor number)
+	3) register then with VFS(Virtual file system)
+	4) implement the driver's file operations for open,read,write...etc.
+The above functionalities can be achived using kernal API's
+1) create device number ---> alloc_chardev_region();
+2) register then with VFS ---> cdev_init(); and cdev_add();
+3) create device file ---> class_create(); and device_create();
+
+onece created should also be removed.
+
+        creation                                 deletion                                       header files
+   
+   alloc_chardev_region();                   unregister_chardev_region();                     includes/linux/fs.h
+   cdev_init() cde_add();                    cdv_del();                                       includes/linux/cdv.h
+   class_create();device_create();           class_destroy();device_destroy();                includes/linux/device.h
+   					
+   					Other kernal functions
+   copy_to_usr() and copy_from_user                                                           incldes/linux/uaccess.h
+   VFS structure defination								      includes/linux/fs.h
+
+
+************************dynamically register a range of char device number************************
+
+the function used to allocate device number is as follows
+int alloc_chardev_region(dev_t *dev, uinsigned int baseminor, unsigned int count, const char *name);
+
+   -->1st arg   dev_t *dev, dev_t is unsigned int32, it a pointer which accepts the major number
+   -->2nd arg   unsigned int baseminor , it is used as starting minor number.
+   -->3rd arg   unsigned int count, this is used to tell the no of minor numbers required.
+   -->4th ard   const char *namae, this is the name of that perticular range of minor numbers, but not the device name
+   
+dev_t is typedefined as uint32 where first 12bytes are used to store major number and last 20 bytes are used to store minor number
+to extract major number we use a macro called MAJOR() and for minar number we use a macro MINOR()
+
+snippet code:
+	dev_t device_number;
+	int minor_no = MINOR(device_number);
+	int major_no = MAJOR(device_number);
+	//thers are present in linux/kdev_t.h
+
+**************************initlizing cdev structure*****************************
+void cdv_init(struct cdev *cdev, const struct file-operations *fops);
+   
+   -->1st arg struct cdev *cdev, it is used to point cdev structure
+   -->2nd arg const struct file_operations *fops, this is used to menton drive's file operation method or system call handler's like open,close..etc
+   snippet code:
+   	struct file_operations demo_fops;
+   	struct cdev demo_cdev;
+   	cdv-init(&demo_cde, &demo_fops);
+   	
+   cdev structure  in lincludes/linux/cdev.h-->
+
+
+   struct cdev{
+   	struct kobject kobj;
+   	struct module *owner;                       --> owner should be initlized with the current module, generally with a macro called THIS_MODULE
+   	const struct file_operations *ops;          -->pointer to file operation structure of the driver
+   	struct list_head list;
+   	dev_t dev;
+   	unsigned int count;
+   	}__randomize_layer;
+
+
+************************adding cdev structure to kernel vfs************************
+int cdev_add(struct cdev *p,dev_t dev,unsigned count);
+	
+	1st arg ---> struct cdev *p is a pointer to cdev structure
+	2nd arg ---> dev_t dev is the device number
+	3rd arg ---> unsigned count is the number of minor numbers corrosponding to this device.
+
+************************system calls in driver***************************
+int pcd_open(struct inode *inode, struct file *filp)
+{
+	return 0;
+}
+	inode is a vfs data structure that holds general information about a file
+	struct file is a data structure that tracks interactions on an opened file by the user processes
+	
+    read write open lseek and release operations defination can be found in "modules/includes/linux/fs.h"
+    its better to copy prototypr from there
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
