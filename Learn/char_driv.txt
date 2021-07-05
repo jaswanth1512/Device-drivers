@@ -78,7 +78,8 @@ int pcd_open(struct inode *inode, struct file *filp)
 	inode is a vfs data structure that holds general information about a file
 	struct file is a data structure that tracks interactions on an opened file by the user processes
 	
-
+    read write open lseek and release operations defination can be found in "modules/includes/linux/fs.h"
+    its better to copy prototypr from there
 
 
 
