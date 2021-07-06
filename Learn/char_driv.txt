@@ -82,8 +82,27 @@ int pcd_open(struct inode *inode, struct file *filp)
     its better to copy prototypr from there
 
 
-
-
+***********************create device files*********************************
+device files will be created automaticly 
+udev:
+udev relies on device information being exported to user space through sysfs.
+class_Create:	
+	create a directory in sysfs:/sys/class/<your_class_name>
+device_create:
+	this function creates a subdirectory under /sys/class/<your_class_name> with device name.	
+	
+struct class *class_create(struct module *owner, const char *name);
+	example:
+	struct class *ret_type
+	ret_type = class_create(THIS_MODULE,"Device_name");
+	
+struct device *device_create(struct class *class, struct device *parent,dev_t devt, void *drvdata, const char *fmt,...);
+	2nd arg can be used if there is a parent child hirarchoy.
+	3rd arg si device number
+	4th arg is data to be added to the device for callbacks
+	5th arg will be 
+	
+	header file used is /linux/device.h
 
 
 
