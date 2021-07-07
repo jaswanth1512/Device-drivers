@@ -2,6 +2,7 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
+#include <linux/uaccess.h>
 
 /* defining devixce number*/
 #define DEV_MEM 512
@@ -28,19 +29,32 @@ ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_p
 		count = DEV_MEM - (*f_pos);
 	}
 	/*copy to user */
-	if(copy_to_user(buff ,device_buffer[*f_pos],count) != 0)
+	if(copy_to_user(buff ,&device_buffer[*f_pos],count) != 0)
 	{
 		return -EFAULT;
 	}
 	/* update current file position*/
 	*f_pos += count;
-	printk("No of bbytes succesfully read = %zu\nupdate file position = %lld",count,*f_pos);
+	printk("No of bytes succesfully read = %zu\nupdate file position = %lld",count,*f_pos);
 	return count;
 }
 ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count, loff_t *f_pos)
 {
 	printk("Write is called for %zu bytes\n",count);
-	return 0;
+        printk("value of file_position is %lld",*f_pos);
+	if(count + (*f_pos) > DEV_MEM)
+	{
+		count = DEV_MEM - (*f_pos);
+	}
+	if(!count)
+		return -ENOMEM;
+	if(copy_from_user(&device_buffer[*f_pos], buff, count) != 0)
+	{
+		return -EFAULT;
+	}
+	*f_pos += count;
+        printk("No of bytes succesfully read = %zu\nupdate file position = %lld",count,*f_pos);
+	return count;
 }
 int pcd_open(struct inode *inode, struct file *filp)
 {
