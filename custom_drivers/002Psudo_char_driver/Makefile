@@ -1,4 +1,4 @@
-obj-m := main.o
+obj-m := pcd.o
 
 KDIR = /usr/lib/modules/5.11.0-22-generic/build
 

@@ -1,0 +1,12 @@
+**************cleanup function**************************
+here we should do exactly opposite to what we have done in init function
+	1) void device_destroy(struct class   *class, dev_t dev);
+	2) void class_destroy(struct class *class);
+	3) void cdev_del(structt cdev *p);
+	4) void unregister_chardev_region(dev_t from, unsigned count);
+
+when we add a class we get a folder with given name in /sys/class which contains dev,uevents
+dev has device numbers and device namae
+
+class_destrroy will delete the class folder in in /sys/class
+

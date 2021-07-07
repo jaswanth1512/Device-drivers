@@ -13,7 +13,6 @@ dev_t device_number;
 /*creating cdev variable*/
 struct cdev pcd_cdev;
 
-
 loff_t pcd_lseek(struct file *filp, loff_t off, int whence)
 {
 	printk("Lssek function is called\n");
@@ -58,9 +57,8 @@ static int __init psudo_chardrive_init(void)
 	alloc_chrdev_region(&device_number,0,1,"pcd_devices");
 	printk("Major and Minor numbers are =  %d :%d \n",MAJOR(device_number),MINOR(device_number));
 	cdev_init(&pcd_cdev,&pcd_fops);
-	pcd_cdev.owner = THIS_MODULE;
+//	pcd_cdev.owner = THIS_MODULE;
 	cdev_add(&pcd_cdev,device_number,1);
-	
 	class_pcd = class_create(THIS_MODULE,"PCD_CLASS");
 	device_pcd = device_create(class_pcd,NULL,device_number,NULL,"PCD");
 	printk("init is succesfull\n");
@@ -70,7 +68,11 @@ static int __init psudo_chardrive_init(void)
 
 static void __exit psudo_chardrive_exit(void)
 {
-
+	device_destroy(class_pcd, device_number);
+	class_destroy(class_pcd);
+	cdev_del(&pcd_cdev);
+	unregister_chrdev_region(device_number,1);
+	printk("Device unregistered\n");
 }
 
 module_init(psudo_chardrive_init);
