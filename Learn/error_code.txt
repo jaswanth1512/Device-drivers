@@ -1,0 +1,8 @@
+**********Error_code**************
+An error code should be returned whenever there is some error 
+generally this error code travelles from user space to the kernal space.
+In user space an global variable named errno will be set to the error code when there is an error.
+These are mentioned in 
+				include/uapi/asm-generic/errno-base.h
+EFAULT - bad address.
+ENOMEM - no mspace left on device.
