@@ -21,7 +21,21 @@ loff_t pcd_lseek(struct file *filp, loff_t off, int whence)
 ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_pos)
 {
 	printk("read is called for %zu bytes\n",count);
-	return 0;
+	printk("value of pile_position is %lld",*f_pos);
+	/*1) check count */
+	if(*f_pos + count > DEV_MEM)
+	{
+		count = DEV_MEM - (*f_pos);
+	}
+	/*copy to user */
+	if(copy_to_user(buff ,device_buffer[*f_pos],count) != 0)
+	{
+		return -EFAULT;
+	}
+	/* update current file position*/
+	*f_pos += count;
+	printk("No of bbytes succesfully read = %zu\nupdate file position = %lld",count,*f_pos);
+	return count;
 }
 ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count, loff_t *f_pos)
 {
