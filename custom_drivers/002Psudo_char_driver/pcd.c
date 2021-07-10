@@ -14,10 +14,34 @@ dev_t device_number;
 /*creating cdev variable*/
 struct cdev pcd_cdev;
 
-loff_t pcd_lseek(struct file *filp, loff_t off, int whence)
+loff_t pcd_lseek(struct file *filp, loff_t offset, int whence)
 {
+
+	loff_t temp;
 	printk("Lssek function is called\n");
-	return 0;
+	switch(whence)
+	{
+		case SEEK_SET:
+			if((offset > DEV_MEM) || (offset < 0))
+				return -EINVAL;
+			filp->f_pos = offset;
+			break;
+		case SEEK_CUR:
+			temp = filp->f_pos + offset;
+			if((temp > DEV_MEM) || (temp < 0))
+				return -EINVAL;
+			filp->f_pos = temp;
+			break;
+		case SEEK_END:
+			temp = DEV_MEM +  offset;
+			if((temp > DEV_MEM) || (temp < 0))
+                                return -EINVAL;
+			filp->f_pos = DEV_MEM + offset;
+			break;
+		default:
+			return -EINVAL;
+	}
+	return filp->f_pos;
 }
 ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_pos)
 {
@@ -63,6 +87,7 @@ int pcd_open(struct inode *inode, struct file *filp)
 }
 int pcd_release(struct inode *inode, struct file *filp)
 {
+	
 	printk("release is called");
 	return 0;
 }

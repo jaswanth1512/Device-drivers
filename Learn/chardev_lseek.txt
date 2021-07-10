@@ -1,0 +1,15 @@
+*******************************lseek********************************
+
+loff_t pcd_lseek(struct file *filp,loff_t off, int whence)
+{
+	retunr 0;
+}
+
+whence is origin, it can be any of these three
+	if whence = SEEK_SET
+		filp->f_pos = off
+	if whence = SEEK_CUR
+		filp->f_pos = f_pos + off
+	if whence = SEEK_END
+		filp->f_pos = DEV_MEM_SIZE + off
+
