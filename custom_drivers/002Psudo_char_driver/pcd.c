@@ -87,7 +87,7 @@ int pcd_open(struct inode *inode, struct file *filp)
 }
 int pcd_release(struct inode *inode, struct file *filp)
 {
-	
+
 	printk("release is called");
 	return 0;
 }
@@ -107,15 +107,39 @@ struct device *device_pcd;
 
 static int __init psudo_chardrive_init(void)
 {
-	alloc_chrdev_region(&device_number,0,1,"pcd_devices");
+	int ret;
+	ret = alloc_chrdev_region(&device_number,0,1,"pcd_devices");
+	if(ret < 0)
+		goto OUT;
 	printk("Major and Minor numbers are =  %d :%d \n",MAJOR(device_number),MINOR(device_number));
 	cdev_init(&pcd_cdev,&pcd_fops);
-//	pcd_cdev.owner = THIS_MODULE;
-	cdev_add(&pcd_cdev,device_number,1);
+	ret = cdev_add(&pcd_cdev,device_number,1);
+	if(ret < 0)
+                goto UNREG_CHRDEV;
 	class_pcd = class_create(THIS_MODULE,"PCD_CLASS");
+	if(IS_ERR(class_pcd))
+	{
+		printk("class creation failed\n");
+		ret = PTR_ERR(class_pcd);
+		goto CDEV_DEL;
+	}
 	device_pcd = device_create(class_pcd,NULL,device_number,NULL,"PCD");
+	if(IS_ERR(device_pcd))
+	{
+		printk("device create failed\n");
+		ret = PTR_ERR(device_pcd);
+		goto CLASS_DESTROY;
+	}
 	printk("init is succesfull\n");
 	return 0;
+CLASS_DESTROY:
+	class_destroy(class_pcd);
+CDEV_DEL:
+	cdev_del(&pcd_cdev);
+UNREG_CHRDEV:
+	unregister_chrdev_region(device_number, 1);
+OUT:
+	return ret;
 }
 
 
