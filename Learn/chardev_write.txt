@@ -1,0 +1,12 @@
+*****************wrie *****************************
+
+it copies data from usr space to kernel
+
+ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count,loff_t *f_pos)
+steps to be followed while using write are as follows
+	1) check the size of count if it is grater than buff size then
+		current_file_position + count > buff_size
+		adjust count to buff_size - current-file_position.
+	2) copy 'count' number of bytes from user to device memory
+	3) update current file_position
+	4) return no of bytes succesfully writeen or the error code.

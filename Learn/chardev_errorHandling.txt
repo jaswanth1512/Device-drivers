@@ -1,0 +1,43 @@
+*********************error Handling*****************
+It is always recomended to use goto in case oferror handling in case of kernal programming
+Example:
+	if(try_something != Err)
+	{
+		if(try_somrthing_2 != Err)
+		{
+			if(try_something_3 != Err)
+			{
+			
+			}else{
+				undo_try_something_2;
+				undo_try_something_1;
+			}
+		}
+		else{
+			undo_try_something_1;
+		}
+	}
+	
+	
+This can be simply written as:
+	if(try_something_1 == Err)
+		goto err1;
+	if(try_something_2 == Err)
+		goto err2;
+	if(try_something_3 == Err)
+		goto err3;
+	err3:
+		undo_try_something_2;
+	err2:
+		undo_try_something_1;
+	err1:
+		return ret;
+		
+************************Error handling for init module***********************
+int alloc_chrdev_region() function returns 0 in case of success and a negetive number in case of failure.
+void cdev_init() - it is a void function so it doesnot return anything.
+int cdev_add() function returns 0 in case of success and a negetive number in case of failure.
+struct class class_create() it returns the &struct on success or returns ERR_PTR() on error.
+	In this case as the return type of class create is a structure so while returning an error number it is converted into a poiner and returned.
+	So here we need to check if that pointer is valid or not, for that we have a macro named IS_ERR(ret_typr) if its invalid addr then return value will be one.
+struct device *device_create() funcion returns a valid address on success and invalid address on error. it can be checked in the same way as we checked for class_create()

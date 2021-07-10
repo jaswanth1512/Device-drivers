@@ -1,0 +1,36 @@
+***************************read method*********************************
+
+	user level process need to read something from device and this can be achived using a read system call.
+	so when user access read sys call then we should send data from our device buffer to user
+	
+	ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_pos);
+	
+	steps to do read method:
+	1) User requested count size should be checked. It should not be more than the device buffer size.
+		if f_pos(current_file_pos) + count > DEV_MEM_SIZE(DEV_MEM_SIZE is the max buffer size of the device)
+		the adjust the count to count = DEV_MEM_SIZE - f_pos
+	2) copy count no of bytes from dev memory to user buff
+	3) update f_pos
+	4) return no of bytes succesfully read or error code.
+	5) if p_pos is EOF then return 0
+every file has a f_pos.
+************************copy_to_user***************************************
+copy_to_user function should be used to send data from device to user space
+copy_to_user is a kernal implemented function used to write to user space
+User space pointers cannot be trusted as it may access invalid address sometimes that is the reason why we use the above function.
+	These check if the addr is valid or not. and if pointer is invalid then copy is not performed.
+	if an invalid addr is encountered dduring the copy only till that point data is copied and returns the amount of data copied
+unsigned long copy_to_user(void __user *to, const void *from, unsigned long n);
+return 0 on success or no of bytes that could not be copied
+return errorcode EFAULT
+	
+***********************copy_from_user*************************************
+copy_from_user function should be used to copy data from device to user space
+copy_from_user is a kernal implemented function used to read data from user space
+User space pointers cannot be trusted as it may access invalid address sometimes that is the reason why we use the above function.
+	These check if the addr is valid or not. and if pointer is invalid then read is not performed.
+	if an invalid addr is encountered during the write only til that point data is writen and returns the amount of data writen.
+unsigned long copy_from_user(void *to, void __user *frmo,unsigned long n);
+return 0 if success
+in case of error return EFAULT
+
