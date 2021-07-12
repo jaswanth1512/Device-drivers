@@ -1,1 +1,0 @@
-cmd_/home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/001hello_world/main.mod := { echo  /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/001hello_world/main.o;  echo; } > /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/001hello_world/main.mod

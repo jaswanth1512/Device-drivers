@@ -1,1 +1,0 @@
-cmd_/home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/001hello_world/modules.order := {   echo /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/001hello_world/main.ko; :; } | awk '!x[$$0]++' - > /home/jaswanth/Jaswanth/ldd/Device-drivers/custom_drivers/001hello_world/modules.order
