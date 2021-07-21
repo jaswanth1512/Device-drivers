@@ -1,4 +1,5 @@
 **************************Design Aspects***************
+Single de=river will manage all the devices.
 Every device has  its own private memory
 generaly all the devices have the followinf info
 	Serial number:
