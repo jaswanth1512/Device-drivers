@@ -1,0 +1,89 @@
+Step 1:
+	allocate a device number
+	int alloc_chrdev_region(dev_t *dev, unsigned baseminor, unsigned count,const char *name)
+	
+	
+		arg_1  --> dev_t device_number.
+		           address of device_number.
+			   device number is of type dev_t
+			   
+	        arg_2  --> starting device number
+	        	   any number of type int.
+	        
+	        arg_3  --> Number of devices required
+	                   any number of type int.
+	        
+	        arg_4  --> name of that set od devices.
+	 		   its a string
+	 		   	   
+	 	ret    --> returns 0 on success.
+	 		   
+	 Example:  dev_t device_number;
+	 	   alloc_chrdev_region(&device_number,0,1,"PCD_device")     //present in char_dev.c
+	 	   
+Step 2:
+	initliaze a cdev
+	void cdev_init(struct cdev *cdev, const struct file_operations *fops)
+	
+		arg_1  --> struct cdev pcd_cdev.
+			   it is a cdev struct and address of this structure is to be given.
+		
+		arg_2  --> struct file_operations pcdd_fops.
+			   it is a structure of type pile_operations.its address should be passed.
+			   
+		
+	Example:   struct cdev pcd_cdev ; 
+		   struct file_opreations pcd_fops =
+		   {
+		   .open = pcd_open,
+		   .module = THIS_MODULE,
+		   .release = PCD_close
+		   };         
+		   cdev_init(&pcd_cdev,&pcd_fops);
+	
+	
+	
+Step 3:
+	int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+		
+		arg1 --> same struct cdev of step2.
+		
+		arg2 --> device_number shoul be passed.
+		
+		arg3 --> no of devices.
+		
+		ret  --> returns o on success.
+	Example:
+		struct cdev pcd_cdev;
+		dev_t device_number;
+		ret = cdev_add(&pcd_cdev,devicd_number,1);
+	
+Step 4:
+	struct class *ret = class_create(owner,name)
+		
+		arg1  --> macro owner which is genrally THIS_MODULE
+		arg2  --> name is the name of this class.
+		
+	Example :
+		struct class *ret;
+		ret = class_create(THIS_MODULE,"PCD_CLASS");
+		
+Step 5:
+
+	dstruct device *device_create(struct class *class, struct device *parent,
+			     dev_t devt, void *drvdata, const char *fmt, ...)
+		
+		arg1  --> This is a struct class
+		arg2  --> This should be the parent device if we are using multiprocesses
+		arg3  --> This is device number
+		arg4  --> Data that is to be added to device for call backs
+		arg5  --> device name.
+		
+In release function we should destroy the initlized functions in reverse order.
+
+		
+		
+		
+		
+		
+	

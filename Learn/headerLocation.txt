@@ -1,0 +1,3 @@
+				Function Name								Location
+				
+			alloc_chrdev_region()							linux/fs/char_dev.c

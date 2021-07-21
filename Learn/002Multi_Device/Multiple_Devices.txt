@@ -1,0 +1,14 @@
+**************************Design Aspects***************
+Every device has  its own private memory
+generaly all the devices have the followinf info
+	Serial number:
+	Starting address
+	size of memory area
+	permissions for that
+		Read only
+		write only
+		Read Write
+Every device should have their own memory space.
+No tow devices should share the same address space.
+Every device has their own cdev structures also.
+

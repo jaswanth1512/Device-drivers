@@ -1,0 +1,39 @@
+steps to be done during initlization i.e in module_init
+
+Step 1:
+	int alloc_chrdev_region(dev_t *dev, unsigned baseminor, unsigned count,const char *name)    -->	   linux/fs/char_dev.c
+	dev_t                           -->	   linux/include/linux/nolibc.h
+
+Step 2:
+	struct cdev   			--> 	   linux/include/linux/cdev.h
+	struct file_operations		--> 	   linux/include/linux/fs.h
+	void cdev_init(struct cdev *cdev, const struct file_operations *fops)			    -->    linux/fs/char_dev.c
+Step 3:
+	int cdev_add(struct cdev *p, dev_t dev, unsigned count)					    -->    linux/fs/char_dev.c
+	struct cdev is same as in step 2
+Step 4:
+	struct class *__class_create(struct module *owner, const char *name,
+			     struct lock_class_key *key)	--> linux/deives/base/class.c
+			     
+	#define class_create(owner, name)		\
+	({						\
+		static struct lock_class_key __key;	\
+		__class_create(owner, name, &__key);	\
+	})							-->   linux/include/linux/device/class.h
+	
+step 5:
+	struct device *device_create(struct class *class, struct device *parent,
+			     dev_t devt, void *drvdata, const char *fmt, ...)		-->    linux/drivers/base/core.c
+			     
+In cleanup function we should call the cleanup functions in reverse order i.e. in module_exit
+
+step 1:
+	void device_destroy(struct class *class, dev_t devt)                            -->    linux/drivers/base/core.c
+	
+step 2:
+	void class_destroy(struct class *cls)                  -->    linux/deives/base/class.c
+step 3:
+	void cdev_del(struct cdev *p)			       -->    linux/fs/char_dev.c
+step 4:
+	void unregister_chrdev_region(dev_t from, unsigned count)  --> linux/fs/char_dev.c
+
