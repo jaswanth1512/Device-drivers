@@ -98,16 +98,17 @@ return 0;
 }
 ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_pos)
 {
-#if 0
+	struct pcdev_private_data *pcdev_data = (struct pcdev_private_data *)filp->private_data;
+	int max_size = pcdev_data->size;
 	printk("read is called for %zu bytes\n",count);
 	printk("value of pile_position is %lld",*f_pos);
-	/*1) check count */
-	if(*f_pos + count > DEV_MEM)
+	
+	if(*f_pos + count > max_size)
 	{
-		count = DEV_MEM - (*f_pos);
+		count = max_size - (*f_pos);
 	}
 	/*copy to user */
-	if(copy_to_user(buff ,&device_buffer[*f_pos],count) != 0)
+	if(copy_to_user(buff ,pcdev_data->buffer + (*f_pos),count) != 0)
 	{
 		return -EFAULT;
 	}
@@ -115,28 +116,29 @@ ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_p
 	*f_pos += count;
 	printk("No of bytes succesfully read = %zu\nupdate file position = %lld",count,*f_pos);
 	return count;
-#endif
+
 return 0;
 }
 ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count, loff_t *f_pos)
 {
-#if 0
+	struct pcdev_private_data *pcdev_data = (struct pcdev_private_data *)filp->private_data;
+	int max_size = pcdev_data->size;
 	printk("Write is called for %zu bytes\n",count);
         printk("value of file_position is %lld",*f_pos);
-	if(count + (*f_pos) > DEV_MEM)
+	if(count + (*f_pos) > max_size)
 	{
-		count = DEV_MEM - (*f_pos);
+		count = max_size - (*f_pos);
 	}
 	if(!count)
 		return -ENOMEM;
-	if(copy_from_user(&device_buffer[*f_pos], buff, count) != 0)
+	if(copy_from_user(pcdev_data->buffer + (*f_pos), buff, count) != 0)
 	{
 		return -EFAULT;
 	}
 	*f_pos += count;
         printk("No of bytes succesfully read = %zu\nupdate file position = %lld",count,*f_pos);
 	return count;
-#endif
+
 return 0;
 }
 int pcd_open(struct inode *inode, struct file *filp)
