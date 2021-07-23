@@ -61,7 +61,10 @@ struct pcdrv_private_data pcdrvData = {
 		}
 	}
 };
-
+int check_permission(void)
+{
+	return 0;
+}
 loff_t pcd_lseek(struct file *filp, loff_t offset, int whence)
 {
 #if 0
@@ -138,10 +141,21 @@ return 0;
 }
 int pcd_open(struct inode *inode, struct file *filp)
 {
-#if 0
-	printk("open is called\n");
-	return 0;
-#endif
+	int ret;
+	int minor_num;
+	struct pcdev_private_data *pdev_data;
+	minor_num = MINOR(inode->i_rdev);
+	pdev_data = container_of(inode->i_cdev,struct pcdev_private_data, pcd_cdev);
+	filp->private_data = pdev_data;
+	ret = check_permission();
+	if(ret != 0)
+	{
+		printk("open is succcesfull\n");
+	}
+	else
+	{
+		printk("open is not succcesfull\n");
+	}
 return 0;
 }
 int pcd_release(struct inode *inode, struct file *filp)
